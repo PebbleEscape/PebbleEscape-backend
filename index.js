@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var twilio = require('twilio');
 
 // Construct the app based on the passed-in configuration parameters.
@@ -10,7 +11,8 @@ module.exports = function appctor(cfg) {
   var app = express();
 
   // Parse incoming request bodies
-  app.use(express.bodyParser());
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
 
   // Use the Connect favicon.
   app.use(express.static(__dirname + '/static'));

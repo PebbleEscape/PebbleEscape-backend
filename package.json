@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/PebbleEscape/PebbleEscape-backend",
   "dependencies": {
+    "body-parser": "^1.13.1",
     "envigor": "^0.9.0",
     "express": "^4.13.0",
     "twilio": "^2.2.1"
