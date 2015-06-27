@@ -1,9 +1,11 @@
 {
   "name": "pebble-escape-backend",
+  "description": "Backend server for stuff",
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "envigorate"
   },
   "repository": {
     "type": "git",
@@ -13,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/PebbleEscape/PebbleEscape-backend/issues"
   },
-  "homepage": "https://github.com/PebbleEscape/PebbleEscape-backend"
+  "homepage": "https://github.com/PebbleEscape/PebbleEscape-backend",
+  "dependencies": {
+    "envigor": "^0.9.0",
+    "express": "^4.13.0",
+    "twilio": "^2.2.1"
+  }
 }
