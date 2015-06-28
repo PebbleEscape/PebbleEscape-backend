@@ -23,7 +23,12 @@ module.exports = function appctor(cfg) {
     // Create our TwiML response.
     var resTwiml = new twilio.TwimlResponse();
 
-    resTwiml.play('/halp.ogg');
+    // Play any defined sound, or just hang up if undefined
+    if (req.query.play) {
+      resTwiml.play(req.query.play);
+    } else {
+      resTwiml.hangup();
+    }
 
     // Send the response we've built to Twilio
     return res.type('text/xml').send(resTwiml.toString());
@@ -33,21 +38,28 @@ module.exports = function appctor(cfg) {
     if (!req.body.to) {
       next('No number specified');
     }
+
+    var responseUrl = req.protocol + '://' + req.header('host') + '/response';
+
+    if (req.body.play) {
+      responseUrl += '?play=' + encodeURIComponent(req.body.play);
+    }
+
     return twiclient.makeCall({
       to: req.body.to,
       from: cfg.twilio.number,
-      url: req.protocol + '://' + req.header('host') + '/response'
-    }).then(function(result){
-      res.send('OK');
-    }).catch(function(err){
+      url: responseUrl
+    }).then(function (result) {
+      res.send({status: 'ok'});
+    }).catch(function (err) {
       console.log(err);
       return next(err);
     });
   }
 
   // The route for recieving a call from Twilio.
-  app.get('/response',playResponse);
-  app.post('/response',playResponse);
+  app.get('/response', playResponse);
+  app.post('/response', playResponse);
 
   app.post('/call',callNumber);
 
