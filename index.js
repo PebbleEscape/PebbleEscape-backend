@@ -57,11 +57,35 @@ module.exports = function appctor(cfg) {
     });
   }
 
+  function smsNumber(req, res, next) {
+    if (!req.body.to) {
+      next('No numbers specified');
+    }
+
+    if (!Array.isArray(req.body.to)){
+      req.body.to = [req.body.to];
+    }
+
+    return Promise.all(req.body.to.map(function (number) {
+      return twiclient.sms.messages.post({
+        to: number,
+        from: cfg.twilio.number,
+        body: req.body.body
+      });
+    })).then(function (result) {
+      res.send({status: 'ok'});
+    }).catch(function (err) {
+      console.log(err);
+      return next(err);
+    });
+  }
+
   // The route for recieving a call from Twilio.
   app.get('/response', playResponse);
   app.post('/response', playResponse);
 
-  app.post('/call',callNumber);
+  app.post('/call', callNumber);
+  app.post('/sms', smsNumber);
 
   // Respond with a 404 code for any other requests
   app.use(function(req,res){return res.status(404).send()});
