@@ -10,6 +10,8 @@ module.exports = function appctor(cfg) {
   // Create the app
   var app = express();
 
+  app.set('trust proxy', true);
+
   // Parse incoming request bodies
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
@@ -33,11 +35,12 @@ module.exports = function appctor(cfg) {
     }
     return twiclient.makeCall({
       to: req.body.to,
-      //from: '+14505556677',
-      url: '/response'
+      from: cfg.twilio.number,
+      url: req.protocol + '://' + req.header('host') + '/response'
     }).then(function(result){
       res.send('OK');
     }).catch(function(err){
+      console.log(err);
       return next(err);
     });
   }
